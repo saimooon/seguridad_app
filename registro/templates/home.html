@@ -1,0 +1,111 @@
+<!-- home.html -->
+{% extends 'base.html' %}  
+
+{% block content %}
+<div class="container bg-white p-4 rounded">
+    {% if user.is_authenticated %}
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Bienvenido, {{ user.username }}!</h2>
+        <a href="{% url 'logout' %}" class="btn btn-warning">Cerrar Sesión</a>
+      </div>
+      <!-- Display messages -->
+      <h3>Actualmente Tienes {{ user_messages.count }} Mensajes Guardados</h3>
+
+      {% if user_messages %}
+        <ul class="list-group">
+          {% for message in user_messages %}
+            <li class="list-group-item d-flex justify-content-between align-items-center mb-2">
+              <div class="message-content">
+                {{ message.content }}
+              </div>
+              <div class="message-actions ms-auto">
+                <button type="button" class="btn btn-success m-1" data-bs-toggle="modal" data-bs-target="#editMessageModal{{ message.id }}">Modificar</button>
+                <form method="post" action="{% url 'manage_messages' message.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger m-1" name="delete">Eliminar</button>
+                </form>
+              </div>
+            </li>
+
+        <!-- Modal for Editing Message -->
+        <div class="modal fade" id="editMessageModal{{ message.id }}" tabindex="-1" aria-labelledby="editMessageModalLabel{{ message.id }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editMessageModalLabel{{ message.id }}">Modificar Mensaje</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <label for="editMessageContent{{ message.id }}">Contenido actual del mensaje:</label>
+                <h3> → {{ message.content }}</h3>
+                <form method="post" action="{% url 'manage_messages' message.id %}">
+                  {% csrf_token %}
+                  
+                  <div class="mb-3">
+                    <label for="editMessageContent{{ message.id }}" class="form-label">Nuevo Contenido del Mensaje:</label>
+                    <textarea class="form-control" id="editMessageContent{{ message.id }}" name="content" rows="5">{{ message_form.content.value }}</textarea>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <button type="submit" name="modify" class="btn btn-primary">Modificar Mensaje</button>
+                  </div>
+                    
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          {% endfor %}
+        </ul>
+      {% else %}
+        <h5>No tienes mensajes.</h5>
+      {% endif %}
+
+<!-- Alertas -->
+    {% if messages %}
+    <div class="alert-container">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <ul class="messages list-unstyled">
+          {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+  {% endif %}
+
+<!-- Message form -->
+<div class="mt-4">
+  <h3 class="mb-3">Formulario de Contacto</h3>
+  <form method="post" action="{% url 'home' %}" class="needs-validation" novalidate>
+      {% csrf_token %}
+      
+      <div class="mb-3">
+          <label for="{{ message_form.content.id_for_label }}" class="form-label">Contenido del Mensaje</label>
+          <textarea class="form-control" id="{{ message_form.content.id_for_label }}" name="{{ message_form.content.name }}" rows="5">{{ message_form.content.value }}</textarea>
+          <div class="invalid-feedback">
+              Por favor, ingrese el contenido del mensaje.
+          </div>
+      </div>
+      <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary btn-lg">Enviar Mensaje</button>
+      </div>
+  </form>
+</div>
+
+    {% endif %}
+
+  </div>
+  <script>
+    // Cierra automáticamente la alerta después de 5 segundos
+    document.addEventListener('DOMContentLoaded', function() {
+      var alertContainer = document.querySelector('.alert-container');
+      if (alertContainer) {
+        setTimeout(function() {
+          alertContainer.style.display = 'none';
+        }, 5000); // 5000 milisegundos = 5 segundos
+      }
+    });
+  </script>
+{% endblock %}
