@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', default='django-insecure-k#hms9w%)9o(_m#ny2#7v$30n5zp)stu!!(pzr7xevw3jjye6s')
-4
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = []
 
@@ -47,13 +47,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'seguridad_app.urls'
@@ -77,18 +77,23 @@ TEMPLATES = [
 WSGI_APPLICATION = 'seguridad_app.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+# Database Produccion
 
 DATABASES = {
     'default': dj_database_url.config(
-        # Feel free to alter this value to suit your needs.
         default='postgresql://postgres:postgres@localhost/postgres',
         conn_max_age=600
     )
 }
 
+# Database Desarrollo
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / "db.sqlite3",  # Cambia BASE_DIR según la configuración de tu proyecto
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -129,7 +134,7 @@ STATIC_URL = 'registro/static/'
 if not DEBUG:
     # Tell Django to copy statics to the `staticfiles` directory
     # in your application directory on Render.
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'registro/staticfiles')
 
     # Turn on WhiteNoise storage backend that takes care of compressing static files
     # and creating unique names for each version so they can safely be cached forever.
@@ -142,5 +147,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'registro.CustomUser'
 LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
+LOGIN_URL = '/login'
+LOGOUT_URL = '/logout'
