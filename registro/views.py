@@ -73,16 +73,21 @@ def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
             user = authenticate(request, username=username, password=password)
-            login(request, user)
-            return redirect('home')  # Redirige a la página de inicio
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, 'Authentication failed.')
+        else:
+            messages.error(request, 'Form validation failed.')
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
 
+    return render(request, 'signup.html', {'form': form})
 
 def user_login(request):
     if request.method == 'POST':
