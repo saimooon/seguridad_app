@@ -6,7 +6,6 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 class CustomUser(AbstractUser):
-
     # avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     
     def __str__(self):

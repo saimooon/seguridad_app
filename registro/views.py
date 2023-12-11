@@ -4,11 +4,12 @@ from django.contrib.auth import login, authenticate
 from .forms import SignUpForm, LoginForm
 from django.contrib.auth.decorators import login_required
 from .forms import UserMessageForm
-from .models import UserMessage
+from .models import UserMessage, CustomUser
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+
 
 def manage_messages(request, message_id=None):
     # Get all user's messages
@@ -69,25 +70,42 @@ def home(request):
 
     return render(request, 'home.html', {'username': username, 'user_messages': user_messages, 'message_form': message_form})
 
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
             username = form.cleaned_data.get('username')
+
+            # Verificar si el nombre de usuario ya existe
+            if CustomUser.objects.filter(username=username).exists():
+                messages.error(request, 'El nombre de usuario ya está en uso. Por favor, elige otro.')
+                return render(request, 'signup.html', {'form': form})
+
+            user = form.save()
             password = form.cleaned_data.get('password1')
+
+            # Try authenticating the user after signup
             user = authenticate(request, username=username, password=password)
+
             if user is not None:
                 login(request, user)
                 return redirect('home')
             else:
-                messages.error(request, 'Authentication failed.')
+                messages.error(request, 'Authentication failed after signup.')
         else:
-            messages.error(request, 'Form validation failed.')
+            # Manejar mensajes de error personalizados para campos específicos
+            if 'username' in form.errors:
+                messages.error(request, 'El nombre de usuario ya está en uso. Por favor, elige otro.')
+            elif 'password2' in form.errors:
+                messages.error(request, 'Las contraseñas no coinciden o son demasiado comunes. Por favor, inténtalo de nuevo.')
+
+            return render(request, 'signup.html', {'form': form})
     else:
         form = SignUpForm()
 
     return render(request, 'signup.html', {'form': form})
+
 
 def user_login(request):
     if request.method == 'POST':
