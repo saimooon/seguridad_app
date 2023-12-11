@@ -150,3 +150,10 @@ AUTH_USER_MODEL = 'registro.CustomUser'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/login'
 LOGOUT_URL = '/logout'
+
+# Configuración del backend de sesión
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_COOKIE_HTTPONLY = True
+
+# Duración de la cookie de sesión en segundos (por ejemplo, 1 hora)
+SESSION_COOKIE_AGE = 3600
