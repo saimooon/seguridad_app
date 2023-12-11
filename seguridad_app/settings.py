@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='django-insecure-k#hms9w%)9o(_
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = 'RENDER' not in os.environ
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -80,21 +80,21 @@ WSGI_APPLICATION = 'seguridad_app.wsgi.application'
 
 # Database Produccion
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default='postgresql://postgres:postgres@localhost/postgres',
-#         conn_max_age=600
-#     )
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        default='postgresql://postgres:postgres@localhost/postgres',
+        conn_max_age=600
+    )
+}
 
 # Database Desarrollo
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db.sqlite3",  # Cambia BASE_DIR según la configuración de tu proyecto
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / "db.sqlite3",  # Cambia BASE_DIR según la configuración de tu proyecto
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
