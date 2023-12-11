@@ -107,6 +107,7 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
+
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request, request.POST)
@@ -118,6 +119,17 @@ def user_login(request):
             next_url = request.GET.get('next', 'home')
 
             return redirect(next_url)  # Redirige a la URL proporcionada en 'next' o a la página de inicio por defecto
+        else:
+            # Manejar mensajes de error personalizados en la vista
+            for field, errors in form.errors.items():
+                for error in errors:
+                    if field == '__all__':
+                        messages.error(request, f"{error}")
+                    else:
+                        messages.error(request, f"{field.capitalize()}: {error}")
+
+            return render(request, 'login.html', {'form': form})
     else:
         form = LoginForm()
+
     return render(request, 'login.html', {'form': form})

@@ -9,9 +9,17 @@ class SignUpForm(UserCreationForm):
         fields = ('username', 'password1', 'password2')
 
 class LoginForm(AuthenticationForm):
-    class Meta:
-        model = CustomUser
+    error_messages = {
+        'invalid_login': 'Nombre de usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.',
+        'inactive': 'Esta cuenta está inactiva.',
+    }
 
+    def confirm_login_allowed(self, user):
+        if not user.is_active:
+            raise forms.ValidationError(
+                self.error_messages['inactive'],
+                code='inactive',
+            )
 
 class UserMessageForm(forms.ModelForm):
     class Meta:
