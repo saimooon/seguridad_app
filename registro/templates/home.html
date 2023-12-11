@@ -1,11 +1,10 @@
 <!-- home.html -->
 {% extends 'base.html' %}  
-
 {% block content %}
-<div class="container bg-white p-4 rounded">
+<div class="container bg-white p-4 rounded mt-4">
     {% if user.is_authenticated %}
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Bienvenido, {{ user.username }}!</h2>
+        <h2>Bienvenid@, {{ user.username|capfirst }}!</h2>
         <a href="{% url 'logout' %}" class="btn btn-warning">Cerrar Sesión</a>
       </div>
       <!-- Display messages -->
@@ -82,7 +81,7 @@
       {% csrf_token %}
       
       <div class="mb-3">
-          <label for="{{ message_form.content.id_for_label }}" class="form-label">Contenido del Mensaje</label>
+          <label for="{{ message_form.content.id_for_label }}" class="form-label">Contenido del Mensaje:</label>
           <textarea class="form-control" id="{{ message_form.content.id_for_label }}" name="{{ message_form.content.name }}" rows="5">{{ message_form.content.value }}</textarea>
           <div class="invalid-feedback">
               Por favor, ingrese el contenido del mensaje.

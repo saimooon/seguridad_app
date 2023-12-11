@@ -4,14 +4,16 @@
   <!-- Contenido principal -->
   <div class="container d-flex flex-column align-items-center justify-content-center flex-grow-1">
     <div class="bg-white p-4 rounded">
-        <h2 class="title text-center mb-3">Iniciar Sesión</h2>
-        
+        <h2 class="title text-center mb-5">Iniciar Sesión</h2>
+
         {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
+            <div class="alert alert-danger" role="alert">
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         {% endif %}
 
         <form method="post" action="{% url 'login' %}" class="d-grid gap-2">
@@ -34,4 +36,5 @@
         <p class="text-end mt-3">¿No tienes una cuenta? <a href="{% url 'signup' %}" class="btn btn-link">Regístrate</a></p>
     </div>
   </div>
+  
 {% endblock %}
